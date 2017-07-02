@@ -30,12 +30,32 @@ class PA extends CI_Controller{
       
         
      $this->load->model('model_panel');
-     $data['sql']=$this->model_panel->getAllNews();
+    // $data['sql']=$this->model_panel->getAllNews();
 
+
+     $limit = 5;
+     $config['base_url'] = base_url().'PA/newsView/';
+    
+     $config['total_rows'] = $this->model_panel->countNews();
+     $config['per_page'] = $limit;
+     $config['num_links'] = 10;
+     $config['uri_segment'] = 3;
+     $config['first_link'] = 'Start';
+     $config['last_link'] = 'Koniec';
+      
+     $this->pagination->initialize($config);
+   
+     $data['pagination'] = $this->pagination->create_links();
+     $data['sql'] = $this->model_panel->getAllNews($limit, $this->uri->segment($config['uri_segment']));
+     
+    
+    
+    
     
       
          $this->load->view('panel/view_top',$data);
          $this->load->view('panel/view_menu',$data);
+         $this->load->view('panel/view_main',$data);
          $this->load->view('panel/view_newsView',$data);
          $this->load->view('panel/view_footer',$data);
     }
